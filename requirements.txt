@@ -1,0 +1,8 @@
+pyspark>=3.5
+delta-spark>=3.0
+boto3>=1.34
+pandas>=2.2
+requests>=2.31
+dbt-databricks>=1.7
+pytest>=8.0
+python-dotenv>=1.0

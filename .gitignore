@@ -1,0 +1,34 @@
+# Environment / secrets
+.env
+.env.*
+*.pem
+
+# Databricks
+.databricks/
+.databrickscfg
+
+# Python
+__pycache__/
+*.pyc
+.venv/
+venv/
+*.egg-info/
+
+# dbt
+dbt_project/target/
+dbt_project/dbt_packages/
+dbt_project/logs/
+
+# Local data dumps
+data/
+*.parquet
+*.csv
+!ingestion/reference_data/taxi_zone_lookup.csv
+
+# OS / editor
+.DS_Store
+.vscode/
+.idea/
+
+# Claude Code local settings
+.claude/
