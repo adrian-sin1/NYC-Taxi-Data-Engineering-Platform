@@ -24,6 +24,7 @@ data/
 *.parquet
 *.csv
 !ingestion/reference_data/taxi_zone_lookup.csv
+!dbt_project/seeds/*.csv
 
 # OS / editor
 .DS_Store

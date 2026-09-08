@@ -1,13 +1,15 @@
-# NYC Taxi Data Lakehouse
+# NYC-Taxi-Data-Engineering-Platform
 
-Medallion-architecture (Bronze/Silver/Gold) data pipeline for NYC TLC taxi trip
-data, built on S3, Databricks + PySpark, Delta Lake, and dbt.
+A data lakehouse for NYC TLC taxi trip data: a medallion-architecture
+(Bronze/Silver/Gold) pipeline built on S3, Databricks + PySpark, Delta Lake,
+and dbt.
 
 ## Status
 
-Phase 0 — repo & environment scaffolding. See the build plan for the full
-phase-by-phase roadmap (MVP pipeline → dbt modeling → incremental loads →
-scaling to multiple months → Airflow orchestration → dashboard → CI/CD).
+Bronze → Silver → Gold pipeline built and validated (Phase 1); dbt star
+schema — staging, dimensions, `fact_trips` — built and tested (Phase 2).
+Next: incremental loads, scaling to more months, Airflow, dashboard, CI/CD.
+See [ROADMAP.md](ROADMAP.md) for the full phase-by-phase plan.
 
 ## Structure
 

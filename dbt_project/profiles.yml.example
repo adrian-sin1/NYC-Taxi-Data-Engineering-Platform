@@ -1,0 +1,16 @@
+# Copy this to ~/.dbt/profiles.yml (NOT into this repo) and fill in your own
+# values. Get the token from Databricks: user menu -> Settings -> Developer ->
+# Access tokens -> Generate new token. Get http_path from your SQL warehouse's
+# Connection details tab.
+
+nyc_taxi_lakehouse:
+  target: dev
+  outputs:
+    dev:
+      type: databricks
+      catalog: workspace
+      schema: nyc_taxi_lakehouse
+      host: <your-workspace-hostname>.cloud.databricks.com
+      http_path: /sql/1.0/warehouses/<your-warehouse-id>
+      token: <your-personal-access-token>
+      threads: 4

@@ -1,0 +1,9 @@
+version: 2
+
+sources:
+  - name: lakehouse
+    schema: nyc_taxi_lakehouse
+    tables:
+      - name: bronze_taxi_trips
+      - name: silver_taxi_trips
+      - name: quarantine_taxi_trips
