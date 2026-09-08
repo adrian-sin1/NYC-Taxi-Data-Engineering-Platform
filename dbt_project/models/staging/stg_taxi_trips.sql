@@ -21,6 +21,8 @@ select
     improvement_surcharge,
     total_amount,
     congestion_surcharge,
+    Airport_fee as airport_fee,
+    cbd_congestion_fee,
     trip_duration_minutes,
     pickup_hour,
     fare_per_mile,

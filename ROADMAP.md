@@ -48,15 +48,25 @@ referential integrity to dimension tables, `fare_amount >= 0`.
 
 Checkpoint: `dbt run && dbt test` passes cleanly. **Passed.**
 
-## Phase 3 — Incremental loads
+## Phase 3 — Incremental loads 🔶
 
-- Bronze: append-only, partitioned by `year`/`month`.
-- Silver: `MERGE` new Bronze records instead of reprocessing the whole
-  table.
-- dbt: incremental materializations for the larger Gold/staging models.
+- Bronze: dynamic partition overwrite on `year`/`month` (`replaceWhere`) —
+  re-running the same month replaces just that partition instead of the
+  whole table; other months are untouched.
+- Silver: `MERGE` into the Silver Delta table keyed on a computed
+  `trip_key` hash (no natural trip ID exists in the source data). Falls
+  back to a one-time full overwrite if the table predates `trip_key`.
+  Quarantine uses the same partition-overwrite approach as Bronze.
+- dbt: `fact_trips` (the one genuinely large model) is now
+  `materialized='incremental'` with `incremental_strategy='merge'` on
+  `trip_id`, filtered to `pickup_date >= max(pickup_date)` already in the
+  table. `dim_date`/`dim_location`/`daily_trip_metrics` stay full-rebuild
+  tables — small enough that incremental complexity isn't worth it.
 
-Checkpoint: running the pipeline twice on the same month doesn't duplicate
-or reprocess unnecessarily.
+Checkpoint: dbt side validated live — re-running `dbt run` after the
+incremental switch left `fact_trips` at the same row count (3,518,537), no
+duplication. Bronze/Silver Spark side (`replaceWhere`/`MERGE`) is written
+but not yet run in Databricks — still needs a live re-run test.
 
 ## Phase 4 — Scale to 3-6 months
 

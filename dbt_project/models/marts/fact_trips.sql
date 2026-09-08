@@ -1,5 +1,19 @@
+{{
+    config(
+        materialized='incremental',
+        unique_key='trip_id',
+        incremental_strategy='merge',
+        on_schema_change='append_new_columns'
+    )
+}}
+
 with trips as (
     select * from {{ ref('stg_taxi_trips') }}
+
+    {% if is_incremental() %}
+    where cast(pickup_datetime as date)
+        >= (select coalesce(max(pickup_date), '1900-01-01') from {{ this }})
+    {% endif %}
 )
 
 select
@@ -29,5 +43,7 @@ select
     tolls_amount,
     improvement_surcharge,
     total_amount,
-    congestion_surcharge
+    congestion_surcharge,
+    airport_fee,
+    cbd_congestion_fee
 from trips

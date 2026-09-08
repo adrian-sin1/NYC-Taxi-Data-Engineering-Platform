@@ -8,7 +8,11 @@ and dbt.
 
 Bronze → Silver → Gold pipeline built and validated (Phase 1); dbt star
 schema — staging, dimensions, `fact_trips` — built and tested (Phase 2).
-Next: incremental loads, scaling to more months, Airflow, dashboard, CI/CD.
+Incremental loads mostly validated (Phase 3): dbt's `fact_trips` merge and
+Bronze's partition-overwrite re-run both confirmed idempotent live; Silver's
+MERGE migration ran once cleanly, still needs a second clean re-run to fully
+confirm. `fact_trips` now also carries `airport_fee`/`cbd_congestion_fee`.
+Next after that: scaling to more months, Airflow, dashboard, CI/CD.
 See [ROADMAP.md](ROADMAP.md) for the full phase-by-phase plan.
 
 ## Structure
