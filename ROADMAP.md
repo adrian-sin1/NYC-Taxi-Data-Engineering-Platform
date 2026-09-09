@@ -48,7 +48,7 @@ referential integrity to dimension tables, `fare_amount >= 0`.
 
 Checkpoint: `dbt run && dbt test` passes cleanly. **Passed.**
 
-## Phase 3 — Incremental loads 🔶
+## Phase 3 — Incremental loads ✅
 
 - Bronze: dynamic partition overwrite on `year`/`month` (`replaceWhere`) —
   re-running the same month replaces just that partition instead of the
@@ -63,15 +63,46 @@ Checkpoint: `dbt run && dbt test` passes cleanly. **Passed.**
   table. `dim_date`/`dim_location`/`daily_trip_metrics` stay full-rebuild
   tables — small enough that incremental complexity isn't worth it.
 
-Checkpoint: dbt side validated live — re-running `dbt run` after the
-incremental switch left `fact_trips` at the same row count (3,518,537), no
-duplication. Bronze/Silver Spark side (`replaceWhere`/`MERGE`) is written
-but not yet run in Databricks — still needs a live re-run test.
+Checkpoint: **passed**, validated live on all three legs. Bronze re-run for
+the same month left the row count unchanged (3,724,889). Silver re-run left
+both the valid table (3,518,537) and quarantine (206,352) unchanged — no
+duplication on either. dbt's `fact_trips` full-refresh left its row count
+unchanged too, and all 10 dbt tests still pass.
 
-## Phase 4 — Scale to 3-6 months
+## Phase 4 — Scale to 3-6 months ✅
 
-Repeat Phase 1's ingestion for the remaining months, relying on Phase 3's
-incremental logic so each new month is additive.
+Scaled to Jan-May 2026 (5 months — August wasn't available yet from TLC,
+which only publishes ~2 months behind; June/July also weren't out).
+Bronze and Silver were refactored to loop over a `MONTHS` list instead of
+one hardcoded year/month, so all 4 new months run in a single notebook
+pass instead of manual edit-and-rerun per month.
+
+Two real bugs surfaced and got fixed while scaling up:
+
+- **Silver's `MERGE` had no delete clause.** When a validation rule
+  changed (see below), rows that used to be valid but no longer are
+  were simply absent from the new computed batch — `MERGE` had nothing
+  to match or insert, so the stale rows stayed in Silver forever. Fixed
+  with a `whenNotMatchedBySourceDelete`, scoped to the specific
+  `year`/`month` partition being reprocessed (unscoped, it would have
+  deleted every other month's data too, since a single month's run
+  never includes any other month in its source).
+- **Location ID validation was `BETWEEN 1 AND 265`**, which assumes
+  every integer in that range is a real taxi zone. It isn't — IDs 264
+  ("Unknown") and 265 ("Outside of NYC") are placeholder rows in the
+  official lookup table. Switched to an existence check against the
+  actual lookup table instead of a numeric range (currently a no-op
+  numerically, since the lookup has no gaps 1-265, but no longer
+  correct by coincidence).
+- Also added a pickup-year plausibility check (2020-2027) after finding
+  8 rows across the dataset with corrupted pickup timestamps
+  (2001/2008/2009) that passed the old `pickup < dropoff` check since
+  both dates were equally wrong.
+
+Checkpoint: **passed**. Bronze total across 5 months: 18,999,282 rows.
+Silver: 18,086,069 valid + 913,213 quarantined = 18,999,282 (matches
+Bronze exactly, confirmed via per-month math). `fact_trips`: 18,086,069,
+matching Silver's valid total exactly, all 10 dbt tests pass.
 
 ## Phase 5 — Airflow orchestration
 
