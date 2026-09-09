@@ -11,8 +11,19 @@ with trips as (
     select * from {{ ref('stg_taxi_trips') }}
 
     {% if is_incremental() %}
-    where cast(pickup_datetime as date)
-        >= (select coalesce(max(pickup_date), '1900-01-01') from {{ this }})
+        {% if var("year", none) and var("month", none) %}
+    -- The DAG passes the exact month it's processing, so always
+    -- reprocess that one month fully -- correct whether it's new,
+    -- already loaded (a refresh after a Silver fix), or older than
+    -- what's currently in the table (a backfill). No assumption that
+    -- months arrive in chronological order.
+    where year = {{ var("year") }} and month = {{ var("month") }}
+        {% else %}
+    -- Manual `dbt run` with no --vars (ad hoc testing): pick up any
+    -- year/month not yet reflected in the table at all, regardless of
+    -- where it falls chronologically.
+    where (year, month) not in (select distinct year, month from {{ this }})
+        {% endif %}
     {% endif %}
 )
 

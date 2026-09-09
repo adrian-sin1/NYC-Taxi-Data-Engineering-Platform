@@ -1,6 +1,7 @@
 # Environment / secrets
 .env
 .env.*
+!.env.example
 *.pem
 
 # Databricks
@@ -33,3 +34,11 @@ data/
 
 # Claude Code local settings
 .claude/
+
+# Airflow runtime (Docker Compose local dev setup)
+logs/*
+!logs/.gitkeep
+plugins/*
+!plugins/.gitkeep
+config/*
+!config/.gitkeep

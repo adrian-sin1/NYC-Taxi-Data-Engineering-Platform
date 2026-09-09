@@ -14,9 +14,10 @@ aren't real zones; this check only confirms the ID is a real lookup row,
 it doesn't exclude those two). Rows failing any rule go to the quarantine
 table, not silently dropped.
 
-Run this as a notebook/job on Databricks serverless compute. Edit MONTHS
-below for the (year, month) pairs you want to (re)process. Run Bronze for
-all these months first — Silver reads from Bronze.
+Run this as a notebook/job on Databricks serverless compute. Reads
+YEAR/MONTH from notebook widgets (set by Airflow when run as a job; default
+here to January 2026 so it still works if you just run the cell by hand).
+Run Bronze for this month first — Silver reads from Bronze.
 """
 
 from delta.tables import DeltaTable
@@ -30,7 +31,10 @@ SILVER_PATH = f"s3://{S3_BUCKET}/silver/taxi_trips/"
 QUARANTINE_PATH = f"s3://{S3_BUCKET}/quarantine/taxi_trips/"
 ZONE_LOOKUP_PATH = f"s3://{S3_BUCKET}/reference/taxi_zone_lookup.csv"
 
-MONTHS = [(2026, 1), (2026, 2), (2026, 3), (2026, 4), (2026, 5)]
+dbutils.widgets.text("year", "2026")
+dbutils.widgets.text("month", "1")
+YEAR = int(dbutils.widgets.get("year"))
+MONTH = int(dbutils.widgets.get("month"))
 
 spark = SparkSession.builder.getOrCreate()
 
@@ -222,5 +226,4 @@ def process_month(year: int, month: int) -> None:
     )
 
 
-for year, month in MONTHS:
-    process_month(year, month)
+process_month(YEAR, MONTH)
