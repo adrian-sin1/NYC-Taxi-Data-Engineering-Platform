@@ -19,6 +19,9 @@ Requires, outside this repo:
   permanent notebooks you've saved in your Databricks workspace, containing
   the current contents of spark_jobs/bronze/ingest_taxi.py and
   spark_jobs/silver/clean_taxi.py respectively.
+- CLASSIC_CLUSTER_ID below pointed at a running (or auto-restartable)
+  classic cluster in the same workspace -- Bronze/Silver run there instead
+  of on serverless job compute.
 """
 
 from __future__ import annotations
@@ -40,6 +43,12 @@ sys.path.insert(0, "/opt/airflow/project")
 
 BRONZE_NOTEBOOK_PATH = "/Workspace/bronze_ingest_taxi"
 SILVER_NOTEBOOK_PATH = "/Workspace/silver_clean_taxi"
+
+# Classic multi-node/autoscaling cluster in the Premium workspace, tested
+# manually (ran both notebooks against an already-loaded month, row counts
+# matched serverless exactly). Used instead of serverless job compute so
+# Bronze/Silver get real worker autoscaling.
+CLASSIC_CLUSTER_ID = "0910-225254-rijork74"
 
 DBT_PROJECT_DIR = "/opt/airflow/project/dbt_project"
 
@@ -98,16 +107,13 @@ with DAG(
         python_callable=_download_and_upload,
     )
 
-    # Serverless compute only works through the multi-task `tasks` array
-    # format of the Jobs API -- the flat `notebook_task=` shortcut always
-    # requires an explicit cluster (new_cluster/existing_cluster_id), even
-    # for a single task. Each entry still needs its own task_key.
     bronze_ingestion = DatabricksSubmitRunOperator(
         task_id="bronze_ingestion",
         databricks_conn_id="databricks_default",
         tasks=[
             {
                 "task_key": "bronze_ingestion",
+                "existing_cluster_id": CLASSIC_CLUSTER_ID,
                 "notebook_task": {
                     "notebook_path": BRONZE_NOTEBOOK_PATH,
                     "base_parameters": {"year": YEAR_XCOM, "month": MONTH_XCOM},
@@ -122,6 +128,7 @@ with DAG(
         tasks=[
             {
                 "task_key": "silver_processing",
+                "existing_cluster_id": CLASSIC_CLUSTER_ID,
                 "notebook_task": {
                     "notebook_path": SILVER_NOTEBOOK_PATH,
                     "base_parameters": {"year": YEAR_XCOM, "month": MONTH_XCOM},
