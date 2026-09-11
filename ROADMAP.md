@@ -18,7 +18,7 @@ has a checkpoint that must pass before moving to the next.
 - **Data quality**: explicit validation rules (`trip_distance > 0`,
   `fare_amount >= 0`, `pickup < dropoff`, valid `location_id`), invalid
   records routed to a quarantine table (not silently dropped).
-- **CI/CD**: GitHub Actions runs Python tests + dbt tests on push.
+- **CI**: GitHub Actions runs Python tests + dbt tests on push.
 
 ## Phase 1 — MVP: one month, Bronze → Silver → one Gold table, run by hand ✅
 
@@ -147,7 +147,7 @@ borough, revenue by month. Saved in Power BI's text-based PBIP format
 Checkpoint: **passed**. All 4 queries resolve, relationships intact, visuals
 render real data.
 
-## Phase 7 — CI/CD ✅
+## Phase 7 — CI ✅
 
 `.github/workflows/ci.yml`, two jobs:
 - `pytest`: installs `requirements.txt`, runs `tests/test_download_tlc.py`
