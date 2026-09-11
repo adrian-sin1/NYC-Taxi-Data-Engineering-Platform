@@ -35,6 +35,11 @@ data/
 # Claude Code local settings
 .claude/
 
+# Power BI Project (PBIP) local-machine cache/state, not part of the
+# shareable report/model definition
+**/.pbi/cache.abf
+**/.pbi/localSettings.json
+
 # Airflow runtime (Docker Compose local dev setup)
 logs/*
 !logs/.gitkeep

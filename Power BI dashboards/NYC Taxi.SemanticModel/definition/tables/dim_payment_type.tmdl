@@ -1,0 +1,37 @@
+table dim_payment_type
+	lineageTag: fee46aca-f231-4e62-a721-7ca531c0968a
+
+	column payment_type_id
+		dataType: int64
+		formatString: 0
+		sourceProviderType: bigint
+		lineageTag: 21c56ca0-5e39-4c9d-b8bb-c2db049b6be3
+		summarizeBy: none
+		sourceColumn: payment_type_id
+
+		annotation SummarizationSetBy = Automatic
+
+	column payment_type_description
+		dataType: string
+		sourceProviderType: nvarchar(max)
+		lineageTag: 53b5d845-7401-43ca-8a85-334fcb97e046
+		summarizeBy: none
+		sourceColumn: payment_type_description
+
+		annotation SummarizationSetBy = Automatic
+
+	partition dim_payment_type = m
+		mode: directQuery
+		source =
+				let
+				    Source = DatabricksMultiCloud.Catalogs("dbc-cd17e9f6-2116.cloud.databricks.com", "/sql/1.0/warehouses/f7df9537f5e0bfd4", [Catalog=null, Database=null, QueryTags=null, EnableAutomaticProxyDiscovery=null, Implementation="2.0", Protocol=null]),
+				    workspace_Database = Source{[Name="nyc_taxi",Kind="Database"]}[Data],
+				    nyc_taxi_lakehouse_Schema = workspace_Database{[Name="nyc_taxi_lakehouse",Kind="Schema"]}[Data],
+				    dim_payment_type_Table = nyc_taxi_lakehouse_Schema{[Name="dim_payment_type",Kind="Table"]}[Data]
+				in
+				    dim_payment_type_Table
+
+	annotation PBI_ResultType = Table
+
+	annotation PBI_NavigationStepName = Navigation
+

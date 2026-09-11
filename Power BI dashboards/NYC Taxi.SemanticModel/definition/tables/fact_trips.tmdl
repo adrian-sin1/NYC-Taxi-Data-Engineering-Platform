@@ -1,0 +1,306 @@
+table fact_trips
+	lineageTag: f5b84646-798d-44c4-98af-78208df6feb8
+
+	measure 'Total Amount No Blank' = VAR result = SUM(fact_trips[total_amount]) RETURN IF(ISBLANK(result), 0, result)
+		lineageTag: 888d8e02-1f80-4617-b8b4-227a6ce3d3f7
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	column year
+		dataType: int64
+		formatString: 0
+		sourceProviderType: int
+		lineageTag: 886ee71b-2ec7-481a-beb5-5f1df06d8955
+		summarizeBy: sum
+		sourceColumn: year
+
+		annotation SummarizationSetBy = Automatic
+
+	column month
+		dataType: int64
+		formatString: 0
+		sourceProviderType: int
+		lineageTag: 2d51027e-232f-46d6-a580-a794c7e4ab7f
+		summarizeBy: sum
+		sourceColumn: month
+
+		annotation SummarizationSetBy = Automatic
+
+	column trip_id
+		dataType: string
+		sourceProviderType: nvarchar(max)
+		lineageTag: 21f9d2f7-7b69-43aa-8b52-bdc51c629957
+		summarizeBy: none
+		sourceColumn: trip_id
+
+		annotation SummarizationSetBy = Automatic
+
+	column vendor_id
+		dataType: int64
+		formatString: 0
+		sourceProviderType: int
+		lineageTag: c1bb7685-56fc-461d-9a99-8a8f0f96900d
+		summarizeBy: sum
+		sourceColumn: vendor_id
+
+		annotation SummarizationSetBy = Automatic
+
+	column pickup_datetime
+		dataType: dateTime
+		formatString: General Date
+		sourceProviderType: datetime2
+		lineageTag: 538a3423-40bb-4533-84e9-a33e236790ce
+		summarizeBy: none
+		sourceColumn: pickup_datetime
+
+		annotation SummarizationSetBy = Automatic
+
+	column dropoff_datetime
+		dataType: dateTime
+		formatString: General Date
+		sourceProviderType: datetime2
+		lineageTag: 1d704437-e291-46f5-aecd-1bde1a2e16fd
+		summarizeBy: none
+		sourceColumn: dropoff_datetime
+
+		annotation SummarizationSetBy = Automatic
+
+	column pickup_date
+		dataType: dateTime
+		formatString: Long Date
+		sourceProviderType: date
+		lineageTag: 9ffa19f1-8ae9-4237-92d0-4e2b611bfe87
+		summarizeBy: none
+		sourceColumn: pickup_date
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation UnderlyingDateTimeDataType = Date
+
+	column pickup_hour
+		dataType: int64
+		formatString: 0
+		sourceProviderType: int
+		lineageTag: 3ca1c9cb-ea29-4120-acdc-ffde3917a66c
+		summarizeBy: sum
+		sourceColumn: pickup_hour
+
+		annotation SummarizationSetBy = Automatic
+
+	column passenger_count
+		dataType: int64
+		formatString: 0
+		sourceProviderType: int
+		lineageTag: d7aff7b2-2c3f-44a4-9695-e776c09562fc
+		summarizeBy: sum
+		sourceColumn: passenger_count
+
+		annotation SummarizationSetBy = Automatic
+
+	column trip_distance
+		dataType: double
+		sourceProviderType: double
+		lineageTag: 23b7bb88-fe85-4130-b321-e609b5da8fe7
+		summarizeBy: sum
+		sourceColumn: trip_distance
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	column trip_duration_minutes
+		dataType: double
+		sourceProviderType: double
+		lineageTag: 2f429b8f-288c-4ebc-aac6-4130e61725b9
+		summarizeBy: sum
+		sourceColumn: trip_duration_minutes
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	column rate_code_id
+		dataType: int64
+		formatString: 0
+		sourceProviderType: int
+		lineageTag: 61156a53-e11f-4223-892d-13ff56e5ac36
+		summarizeBy: sum
+		sourceColumn: rate_code_id
+
+		annotation SummarizationSetBy = Automatic
+
+	column store_and_fwd_flag
+		dataType: string
+		sourceProviderType: nvarchar(max)
+		lineageTag: c3e07994-97c0-4c3a-94c2-029c8593072e
+		summarizeBy: none
+		sourceColumn: store_and_fwd_flag
+
+		annotation SummarizationSetBy = Automatic
+
+	column pickup_location_id
+		dataType: int64
+		formatString: 0
+		sourceProviderType: int
+		lineageTag: aa0de6a9-6e36-4a31-a941-16df427024b7
+		summarizeBy: none
+		sourceColumn: pickup_location_id
+
+		annotation SummarizationSetBy = Automatic
+
+	column dropoff_location_id
+		dataType: int64
+		formatString: 0
+		sourceProviderType: int
+		lineageTag: 2c84e844-9e4f-4e2d-a3fa-abb5e9ae94e0
+		summarizeBy: sum
+		sourceColumn: dropoff_location_id
+
+		annotation SummarizationSetBy = Automatic
+
+	column payment_type_id
+		dataType: int64
+		formatString: 0
+		sourceProviderType: int
+		lineageTag: 1e6665ef-ae4c-43b6-88ab-37d0962d08e8
+		summarizeBy: none
+		sourceColumn: payment_type_id
+
+		annotation SummarizationSetBy = Automatic
+
+	column fare_amount
+		dataType: double
+		sourceProviderType: double
+		lineageTag: 0b170d68-ae78-4d66-97e1-5c369a5b8e70
+		summarizeBy: sum
+		sourceColumn: fare_amount
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	column fare_per_mile
+		dataType: double
+		sourceProviderType: double
+		lineageTag: bfc132ca-61d8-4ddf-84db-1e6e5dc82447
+		summarizeBy: sum
+		sourceColumn: fare_per_mile
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	column extra
+		dataType: double
+		sourceProviderType: double
+		lineageTag: 62dcbeb5-76ce-4e6f-a74b-37de75819953
+		summarizeBy: sum
+		sourceColumn: extra
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	column mta_tax
+		dataType: double
+		sourceProviderType: double
+		lineageTag: 68297dc7-68fa-4728-9c2f-3ad9b3842b8d
+		summarizeBy: sum
+		sourceColumn: mta_tax
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	column tip_amount
+		dataType: double
+		sourceProviderType: double
+		lineageTag: 69709381-5a09-4587-98cd-5ef2342db540
+		summarizeBy: sum
+		sourceColumn: tip_amount
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	column tolls_amount
+		dataType: double
+		sourceProviderType: double
+		lineageTag: ddaf77ca-6b78-496c-902e-3d05bf297185
+		summarizeBy: sum
+		sourceColumn: tolls_amount
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	column improvement_surcharge
+		dataType: double
+		sourceProviderType: double
+		lineageTag: df414b5b-a11a-48f8-82e4-02de1532bed8
+		summarizeBy: sum
+		sourceColumn: improvement_surcharge
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	column total_amount
+		dataType: double
+		sourceProviderType: double
+		lineageTag: 05349e29-6a72-41c4-ac91-ded2f575d381
+		summarizeBy: sum
+		sourceColumn: total_amount
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	column congestion_surcharge
+		dataType: double
+		sourceProviderType: double
+		lineageTag: f6d383a3-3ecf-4769-9091-38e8fd1339b7
+		summarizeBy: sum
+		sourceColumn: congestion_surcharge
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	column airport_fee
+		dataType: double
+		sourceProviderType: double
+		lineageTag: 81dc4ce7-7bdb-4d29-a19f-99a896beaac9
+		summarizeBy: sum
+		sourceColumn: airport_fee
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	column cbd_congestion_fee
+		dataType: double
+		sourceProviderType: double
+		lineageTag: b38d2498-d5c1-45ce-b842-7cc325d4a23e
+		summarizeBy: sum
+		sourceColumn: cbd_congestion_fee
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	partition fact_trips = m
+		mode: directQuery
+		source =
+				let
+				    Source = DatabricksMultiCloud.Catalogs("dbc-cd17e9f6-2116.cloud.databricks.com", "/sql/1.0/warehouses/f7df9537f5e0bfd4", [Catalog=null, Database=null, QueryTags=null, EnableAutomaticProxyDiscovery=null, Implementation="2.0", Protocol=null]),
+				    workspace_Database = Source{[Name="nyc_taxi",Kind="Database"]}[Data],
+				    nyc_taxi_lakehouse_Schema = workspace_Database{[Name="nyc_taxi_lakehouse",Kind="Schema"]}[Data],
+				    fact_trips_Table = nyc_taxi_lakehouse_Schema{[Name="fact_trips",Kind="Table"]}[Data]
+				in
+				    fact_trips_Table
+
+	annotation PBI_ResultType = Table
+
+	annotation PBI_NavigationStepName = Navigation
+

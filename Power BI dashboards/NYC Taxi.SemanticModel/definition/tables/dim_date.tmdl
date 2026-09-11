@@ -1,0 +1,142 @@
+table dim_date
+	lineageTag: c23caf76-75f7-4019-b44d-b622cc271cdf
+
+	column date_day
+		dataType: dateTime
+		formatString: Long Date
+		sourceProviderType: date
+		lineageTag: c01d9ce2-cc04-46ed-8a0a-106555f5bc62
+		summarizeBy: none
+		sourceColumn: date_day
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation UnderlyingDateTimeDataType = Date
+
+	column year
+		dataType: int64
+		formatString: 0
+		sourceProviderType: int
+		lineageTag: a6f9bd8b-6571-4b11-9685-1805802cd885
+		summarizeBy: none
+		sourceColumn: year
+
+		annotation SummarizationSetBy = Automatic
+
+	column month
+		dataType: int64
+		formatString: 0
+		sourceProviderType: int
+		lineageTag: 9760a917-0007-4f38-acd2-f5a4fd6fda6e
+		summarizeBy: none
+		sourceColumn: month
+
+		annotation SummarizationSetBy = Automatic
+
+	column day
+		dataType: int64
+		formatString: 0
+		sourceProviderType: int
+		lineageTag: 9ca4a6cb-bbb4-4736-adf0-c92e472573c0
+		summarizeBy: none
+		sourceColumn: day
+
+		annotation SummarizationSetBy = Automatic
+
+	column day_of_week
+		dataType: int64
+		formatString: 0
+		sourceProviderType: int
+		lineageTag: 4aac0423-4221-44ce-8771-7a5ae5e32d3d
+		summarizeBy: none
+		sourceColumn: day_of_week
+
+		annotation SummarizationSetBy = Automatic
+
+	column day_name
+		dataType: string
+		sourceProviderType: nvarchar(max)
+		lineageTag: 82e1ec30-6657-4d17-86b1-93eaa9722ca3
+		summarizeBy: none
+		sourceColumn: day_name
+
+		annotation SummarizationSetBy = Automatic
+
+	column month_name
+		dataType: string
+		sourceProviderType: nvarchar(max)
+		lineageTag: 5aa7e8a4-7a06-40ee-9756-02193c87cc65
+		summarizeBy: none
+		sourceColumn: month_name
+		sortByColumn: month
+
+		changedProperty = SortByColumn
+
+		annotation SummarizationSetBy = Automatic
+
+	column is_weekend
+		dataType: boolean
+		formatString: """TRUE"";""TRUE"";""FALSE"""
+		sourceProviderType: bit
+		lineageTag: 4a1fbc03-0c2b-4c4b-9e17-295137ae5965
+		summarizeBy: none
+		sourceColumn: is_weekend
+
+		annotation SummarizationSetBy = Automatic
+
+	column is_holiday
+		dataType: boolean
+		formatString: """TRUE"";""TRUE"";""FALSE"""
+		sourceProviderType: bit
+		lineageTag: 4f755524-0433-47d3-94c5-1a9fb70b20b3
+		summarizeBy: none
+		sourceColumn: is_holiday
+
+		annotation SummarizationSetBy = Automatic
+
+	column holiday_name
+		dataType: string
+		sourceProviderType: nvarchar(max)
+		lineageTag: ba384b97-53b0-4f31-9bdf-b9b80c8f50bf
+		summarizeBy: none
+		sourceColumn: holiday_name
+
+		annotation SummarizationSetBy = Automatic
+
+	column year_month
+		dataType: int64
+		formatString: 0
+		sourceProviderType: int
+		lineageTag: db11ba13-372a-4f80-86ae-d7f02c03eb79
+		summarizeBy: none
+		sourceColumn: year_month
+
+		annotation SummarizationSetBy = Automatic
+
+	column year_month_label
+		dataType: string
+		sourceProviderType: nvarchar(max)
+		lineageTag: 4329952a-1e5d-46ae-b8c3-9b2c9b3a1271
+		summarizeBy: none
+		sourceColumn: year_month_label
+		sortByColumn: year_month
+
+		changedProperty = SortByColumn
+
+		annotation SummarizationSetBy = Automatic
+
+	partition dim_date = m
+		mode: directQuery
+		source =
+				let
+				    Source = DatabricksMultiCloud.Catalogs("dbc-cd17e9f6-2116.cloud.databricks.com", "/sql/1.0/warehouses/f7df9537f5e0bfd4", [Catalog=null, Database=null, QueryTags=null, EnableAutomaticProxyDiscovery=null, Implementation="2.0", Protocol=null]),
+				    workspace_Database = Source{[Name="nyc_taxi",Kind="Database"]}[Data],
+				    nyc_taxi_lakehouse_Schema = workspace_Database{[Name="nyc_taxi_lakehouse",Kind="Schema"]}[Data],
+				    dim_date_Table = nyc_taxi_lakehouse_Schema{[Name="dim_date",Kind="Table"]}[Data]
+				in
+				    dim_date_Table
+
+	annotation PBI_ResultType = Table
+
+	annotation PBI_NavigationStepName = Navigation
+

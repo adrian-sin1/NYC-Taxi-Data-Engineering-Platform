@@ -1,0 +1,11 @@
+{
+  "$schema": "https://developer.microsoft.com/json-schemas/fabric/gitIntegration/platformProperties/2.0.0/schema.json",
+  "metadata": {
+    "type": "Report",
+    "displayName": "NYC Taxi"
+  },
+  "config": {
+    "version": "2.0",
+    "logicalId": "02518928-904b-4105-9f38-c469ebdcc052"
+  }
+}

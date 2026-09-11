@@ -1,0 +1,55 @@
+table dim_location
+	lineageTag: 18d446ae-ce29-434b-9c72-2a11983424dc
+
+	column location_id
+		dataType: int64
+		formatString: 0
+		sourceProviderType: int
+		lineageTag: 52a9e841-0644-4f33-97e3-339c43280296
+		summarizeBy: none
+		sourceColumn: location_id
+
+		annotation SummarizationSetBy = Automatic
+
+	column borough
+		dataType: string
+		sourceProviderType: nvarchar(max)
+		lineageTag: e9244e6c-b6a2-4618-baf4-e9e116b4db99
+		summarizeBy: none
+		sourceColumn: borough
+
+		annotation SummarizationSetBy = Automatic
+
+	column zone
+		dataType: string
+		sourceProviderType: nvarchar(max)
+		lineageTag: 15a82321-0423-4b94-834c-ff32e496720f
+		summarizeBy: none
+		sourceColumn: zone
+
+		annotation SummarizationSetBy = Automatic
+
+	column service_zone
+		dataType: string
+		sourceProviderType: nvarchar(max)
+		lineageTag: 6f9b726d-32c6-4fec-acfa-58fe9eef8d91
+		summarizeBy: none
+		sourceColumn: service_zone
+
+		annotation SummarizationSetBy = Automatic
+
+	partition dim_location = m
+		mode: directQuery
+		source =
+				let
+				    Source = DatabricksMultiCloud.Catalogs("dbc-cd17e9f6-2116.cloud.databricks.com", "/sql/1.0/warehouses/f7df9537f5e0bfd4", [Catalog=null, Database=null, QueryTags=null, EnableAutomaticProxyDiscovery=null, Implementation="2.0", Protocol=null]),
+				    workspace_Database = Source{[Name="nyc_taxi",Kind="Database"]}[Data],
+				    nyc_taxi_lakehouse_Schema = workspace_Database{[Name="nyc_taxi_lakehouse",Kind="Schema"]}[Data],
+				    dim_location_Table = nyc_taxi_lakehouse_Schema{[Name="dim_location",Kind="Table"]}[Data]
+				in
+				    dim_location_Table
+
+	annotation PBI_ResultType = Table
+
+	annotation PBI_NavigationStepName = Navigation
+

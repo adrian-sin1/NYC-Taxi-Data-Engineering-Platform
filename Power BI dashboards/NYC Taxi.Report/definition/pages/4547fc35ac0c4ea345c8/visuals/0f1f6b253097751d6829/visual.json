@@ -1,0 +1,178 @@
+{
+  "$schema": "https://developer.microsoft.com/json-schemas/fabric/item/report/definition/visualContainer/2.12.0/schema.json",
+  "name": "0f1f6b253097751d6829",
+  "position": {
+    "x": 1275.5628058727571,
+    "y": 241.37030995106039,
+    "z": 2,
+    "height": 625.44861337683528,
+    "width": 644.82871125611757,
+    "tabOrder": 2
+  },
+  "visual": {
+    "visualType": "lineChart",
+    "query": {
+      "queryState": {
+        "Category": {
+          "projections": [
+            {
+              "field": {
+                "Column": {
+                  "Expression": {
+                    "SourceRef": {
+                      "Entity": "dim_date"
+                    }
+                  },
+                  "Property": "year_month_label"
+                }
+              },
+              "queryRef": "dim_date.year_month_label",
+              "nativeQueryRef": "year_month_label",
+              "active": true
+            }
+          ],
+          "showAll": true
+        },
+        "Y": {
+          "projections": [
+            {
+              "field": {
+                "Measure": {
+                  "Expression": {
+                    "SourceRef": {
+                      "Entity": "fact_trips"
+                    }
+                  },
+                  "Property": "Total Amount No Blank"
+                }
+              },
+              "queryRef": "fact_trips.Measure",
+              "nativeQueryRef": "Total Amount No Blank"
+            }
+          ]
+        }
+      }
+    },
+    "objects": {
+      "labels": [
+        {
+          "properties": {
+            "show": {
+              "expr": {
+                "Literal": {
+                  "Value": "false"
+                }
+              }
+            }
+          }
+        }
+      ]
+    },
+    "drillFilterOtherVisuals": true
+  },
+  "filterConfig": {
+    "filters": [
+      {
+        "name": "391c72992c4900920048",
+        "field": {
+          "Column": {
+            "Expression": {
+              "SourceRef": {
+                "Entity": "dim_date"
+              }
+            },
+            "Property": "year_month_label"
+          }
+        },
+        "type": "Categorical"
+      },
+      {
+        "name": "1077dc233155b2b0d502",
+        "field": {
+          "Column": {
+            "Expression": {
+              "SourceRef": {
+                "Entity": "dim_date"
+              }
+            },
+            "Property": "year_month"
+          }
+        },
+        "type": "Advanced",
+        "filter": {
+          "Version": 2,
+          "From": [
+            {
+              "Name": "d",
+              "Entity": "dim_date",
+              "Type": 0
+            }
+          ],
+          "Where": [
+            {
+              "Condition": {
+                "And": {
+                  "Left": {
+                    "Comparison": {
+                      "ComparisonKind": 2,
+                      "Left": {
+                        "Column": {
+                          "Expression": {
+                            "SourceRef": {
+                              "Source": "d"
+                            }
+                          },
+                          "Property": "year_month"
+                        }
+                      },
+                      "Right": {
+                        "Literal": {
+                          "Value": "202601L"
+                        }
+                      }
+                    }
+                  },
+                  "Right": {
+                    "Comparison": {
+                      "ComparisonKind": 4,
+                      "Left": {
+                        "Column": {
+                          "Expression": {
+                            "SourceRef": {
+                              "Source": "d"
+                            }
+                          },
+                          "Property": "year_month"
+                        }
+                      },
+                      "Right": {
+                        "Literal": {
+                          "Value": "202606L"
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          ]
+        },
+        "howCreated": "User"
+      },
+      {
+        "name": "56bba3cfa6e4e9a0ac13",
+        "field": {
+          "Measure": {
+            "Expression": {
+              "SourceRef": {
+                "Entity": "fact_trips"
+              }
+            },
+            "Property": "Total Amount No Blank"
+          }
+        },
+        "type": "Advanced"
+      }
+    ]
+  }
+}

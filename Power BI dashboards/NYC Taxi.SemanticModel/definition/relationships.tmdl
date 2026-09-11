@@ -1,0 +1,17 @@
+relationship 17c25a9a-58ff-ec13-0c83-687430c65cd0
+	fromColumn: fact_trips.pickup_date
+	toColumn: dim_date.date_day
+
+relationship f6aa74b1-bf09-41d4-7637-6127bda13313
+	fromColumn: fact_trips.pickup_location_id
+	toColumn: dim_location.location_id
+
+relationship 7cbbcee6-7b96-b02c-2b73-4982a80efdb6
+	fromColumn: fact_trips.payment_type_id
+	toColumn: dim_payment_type.payment_type_id
+
+relationship cf864acb-8cd2-c02b-a595-8deb5c780eeb
+	isActive: false
+	fromColumn: fact_trips.dropoff_location_id
+	toColumn: dim_location.location_id
+

@@ -20,12 +20,6 @@ has a checkpoint that must pass before moving to the next.
   records routed to a quarantine table (not silently dropped).
 - **CI/CD**: GitHub Actions runs Python tests + dbt tests on push.
 
-## Phase 0 — Repo & environment setup ✅
-
-Folder structure, `.gitignore`, S3 bucket (`nyc-transportation-adrian`),
-Databricks Free Edition workspace with Unity Catalog external location for
-S3 access, taxi-zone lookup CSV downloaded.
-
 ## Phase 1 — MVP: one month, Bronze → Silver → one Gold table, run by hand ✅
 
 - `ingestion/download_tlc.py` — pulls a month of TLC parquet, uploads to S3.
@@ -146,37 +140,12 @@ Airflow's standard mechanism; not independently re-verified beyond that.
 
 Power BI, DirectQuery against the Databricks SQL warehouse (`fact_trips`,
 `dim_date`, `dim_location`, `dim_payment_type`). Visuals: trip count by
-borough, revenue by month.
+borough, revenue by month. Saved in Power BI's text-based PBIP format
+(`Power BI dashboards/`) for source control instead of a single binary
+`.pbix`.
 
-Migrating from Databricks Free Edition to Premium (see Phase 4.5 note below)
-meant repointing every query's `Source` step to the new host/warehouse and
-fixing a hardcoded `workspace` catalog reference (Premium's catalog is
-`nyc_taxi`) baked into an intermediate navigation step in each query's M
-code — the Databricks connector's graphical "Change Source" dialog is
-disabled for this connector, so this had to go through Power Query's
-Advanced Editor per query. Table relationships (fact_trips → dim_date/
-dim_location/dim_payment_type) don't survive a query's shape changing
-underneath them and had to be manually redrawn afterward.
-
-Checkpoint: **passed**. All 4 queries resolve against Premium, relationships
-rebuilt, visuals render real data with `trip_id` and other fact columns
-intact.
-
-## Phase 6.5 — Databricks Premium migration ✅
-
-Upgraded from Databricks Free Edition to Premium (AWS Marketplace, deployed
-into the user's own AWS account) to get past Free Edition's serverless-only
-shared-pool queueing delays. Unity Catalog, notebooks, the Airflow
-connection, and both `dbt`/Power BI configs were rebuilt against the new
-workspace (new catalog `nyc_taxi`, new IAM role, new external location).
-Classic multi-node clusters — the original motivation for upgrading — hit an
-AWS `PendingVerification` hold on the new account/payment method; rather
-than wait, the decision was made to stay on Premium's serverless compute
-going forward (still a dedicated pool vs. Free Edition's shared one).
-
-Checkpoint: **passed**. Full DAG (`resolve_month` through `dbt_test`)
-validated end to end against the Premium workspace via a manual Airflow
-trigger.
+Checkpoint: **passed**. All 4 queries resolve, relationships intact, visuals
+render real data.
 
 ## Phase 7 — CI/CD ✅
 
@@ -185,17 +154,14 @@ trigger.
   (mocks `requests`/`boto3` — no real network or S3 calls in CI).
 - `dbt-test`: installs `dbt-databricks`, writes a `profiles.yml` from
   `DATABRICKS_HOST`/`DATABRICKS_HTTP_PATH`/`DATABRICKS_TOKEN` GitHub Actions
-  secrets (a CI-only target, `ci`, pointed at the same Premium
+  secrets (a CI-only target, `ci`, pointed at the same
   `nyc_taxi.nyc_taxi_lakehouse` schema real data lives in), then runs
   `dbt test`.
 
-Checkpoint: `pytest` job verified passing locally (3/3 tests). The
-`dbt-test` job's YAML is written and structurally correct, but **not yet
-verified running on GitHub** — it needs the three secrets added under repo
-Settings → Secrets and variables → Actions before a push will actually
-exercise it.
-
-## Phase 8 — README / architecture writeup
-
-Problem statement, architecture diagram, "why each technology" table (S3,
-Airflow, Databricks, PySpark, Delta Lake, dbt, BI tool, GitHub Actions).
+Checkpoint: **passed**. Both `pytest` and `dbt-test` jobs verified green on
+a real GitHub Actions run (repo secrets configured). One real bug surfaced
+and got fixed: plain `pytest` (how CI invokes it) doesn't add the repo root
+to `sys.path` the way `python -m pytest` does locally, so
+`tests/test_download_tlc.py` failed with `ModuleNotFoundError: No module
+named 'ingestion'` on its first CI run. Fixed with a `pytest.ini` setting
+`pythonpath = .`, which works regardless of invocation style.

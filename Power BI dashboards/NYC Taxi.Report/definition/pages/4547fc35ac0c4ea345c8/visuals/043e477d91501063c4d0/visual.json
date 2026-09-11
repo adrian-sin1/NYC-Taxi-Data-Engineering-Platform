@@ -1,0 +1,122 @@
+{
+  "$schema": "https://developer.microsoft.com/json-schemas/fabric/item/report/definition/visualContainer/2.12.0/schema.json",
+  "name": "043e477d91501063c4d0",
+  "position": {
+    "x": 560.2610114192496,
+    "y": 241.37030995106039,
+    "z": 1,
+    "height": 618.60182370820667,
+    "width": 697.38601823708211,
+    "tabOrder": 1
+  },
+  "visual": {
+    "visualType": "clusteredBarChart",
+    "query": {
+      "queryState": {
+        "Category": {
+          "projections": [
+            {
+              "field": {
+                "Column": {
+                  "Expression": {
+                    "SourceRef": {
+                      "Entity": "dim_location"
+                    }
+                  },
+                  "Property": "borough"
+                }
+              },
+              "queryRef": "dim_location.borough",
+              "nativeQueryRef": "Count of borough",
+              "active": true
+            }
+          ]
+        },
+        "Y": {
+          "projections": [
+            {
+              "field": {
+                "Aggregation": {
+                  "Expression": {
+                    "Column": {
+                      "Expression": {
+                        "SourceRef": {
+                          "Entity": "fact_trips"
+                        }
+                      },
+                      "Property": "trip_id"
+                    }
+                  },
+                  "Function": 5
+                }
+              },
+              "queryRef": "CountNonNull(fact_trips.trip_id)",
+              "nativeQueryRef": "Count of trip_id"
+            }
+          ]
+        }
+      },
+      "sortDefinition": {
+        "sort": [
+          {
+            "field": {
+              "Aggregation": {
+                "Expression": {
+                  "Column": {
+                    "Expression": {
+                      "SourceRef": {
+                        "Entity": "fact_trips"
+                      }
+                    },
+                    "Property": "trip_id"
+                  }
+                },
+                "Function": 5
+              }
+            },
+            "direction": "Descending"
+          }
+        ],
+        "isDefaultSort": true
+      }
+    },
+    "drillFilterOtherVisuals": true
+  },
+  "filterConfig": {
+    "filters": [
+      {
+        "name": "1ffaf150802e8803e61b",
+        "field": {
+          "Column": {
+            "Expression": {
+              "SourceRef": {
+                "Entity": "dim_location"
+              }
+            },
+            "Property": "borough"
+          }
+        },
+        "type": "Categorical"
+      },
+      {
+        "name": "cdfb34851003b7c7b77a",
+        "field": {
+          "Aggregation": {
+            "Expression": {
+              "Column": {
+                "Expression": {
+                  "SourceRef": {
+                    "Entity": "fact_trips"
+                  }
+                },
+                "Property": "trip_id"
+              }
+            },
+            "Function": 5
+          }
+        },
+        "type": "Advanced"
+      }
+    ]
+  }
+}
