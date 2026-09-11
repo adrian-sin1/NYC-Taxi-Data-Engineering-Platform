@@ -10,8 +10,11 @@ Bronze → Silver → Gold pipeline built and validated (Phase 1); dbt star
 schema built and tested (Phase 2); incremental loads validated end to end
 (Phase 3); scaled to Jan-May 2026 — 5 months, 18,999,282 raw trips, 18M+
 valid rows in `fact_trips` (Phase 4); Airflow orchestration running
-locally via Docker, full DAG chain validated end to end (Phase 5). Next:
-dashboard, CI/CD.
+locally via Docker, full DAG chain validated end to end (Phase 5); Power BI
+dashboard built on the Gold tables (Phase 6); migrated the whole stack from
+Databricks Free Edition to Premium (Phase 6.5); GitHub Actions CI wired up
+for `pytest` + `dbt test` (Phase 7). Next: README/architecture writeup
+(Phase 8).
 See [ROADMAP.md](ROADMAP.md) for the full phase-by-phase plan.
 
 ## Structure

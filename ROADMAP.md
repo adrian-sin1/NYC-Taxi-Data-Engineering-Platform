@@ -142,16 +142,58 @@ deliberately broken config swapped in and back out. `retries`/
 `retry_delay` are confirmed correctly wired in `default_args` via
 Airflow's standard mechanism; not independently re-verified beyond that.
 
-## Phase 6 — Dashboard
+## Phase 6 — Dashboard ✅
 
-Tableau, Power BI, or a lightweight alternative (Streamlit / Databricks SQL
-dashboard) on the Gold tables: trips-by-hour, trips-by-borough,
-revenue-by-month.
+Power BI, DirectQuery against the Databricks SQL warehouse (`fact_trips`,
+`dim_date`, `dim_location`, `dim_payment_type`). Visuals: trip count by
+borough, revenue by month.
 
-## Phase 7 — CI/CD
+Migrating from Databricks Free Edition to Premium (see Phase 4.5 note below)
+meant repointing every query's `Source` step to the new host/warehouse and
+fixing a hardcoded `workspace` catalog reference (Premium's catalog is
+`nyc_taxi`) baked into an intermediate navigation step in each query's M
+code — the Databricks connector's graphical "Change Source" dialog is
+disabled for this connector, so this had to go through Power Query's
+Advanced Editor per query. Table relationships (fact_trips → dim_date/
+dim_location/dim_payment_type) don't survive a query's shape changing
+underneath them and had to be manually redrawn afterward.
 
-`.github/workflows/ci.yml`: install deps → `pytest` → `dbt test` (CI-safe
-target) → report pass/fail. Not a full deployment pipeline.
+Checkpoint: **passed**. All 4 queries resolve against Premium, relationships
+rebuilt, visuals render real data with `trip_id` and other fact columns
+intact.
+
+## Phase 6.5 — Databricks Premium migration ✅
+
+Upgraded from Databricks Free Edition to Premium (AWS Marketplace, deployed
+into the user's own AWS account) to get past Free Edition's serverless-only
+shared-pool queueing delays. Unity Catalog, notebooks, the Airflow
+connection, and both `dbt`/Power BI configs were rebuilt against the new
+workspace (new catalog `nyc_taxi`, new IAM role, new external location).
+Classic multi-node clusters — the original motivation for upgrading — hit an
+AWS `PendingVerification` hold on the new account/payment method; rather
+than wait, the decision was made to stay on Premium's serverless compute
+going forward (still a dedicated pool vs. Free Edition's shared one).
+
+Checkpoint: **passed**. Full DAG (`resolve_month` through `dbt_test`)
+validated end to end against the Premium workspace via a manual Airflow
+trigger.
+
+## Phase 7 — CI/CD ✅
+
+`.github/workflows/ci.yml`, two jobs:
+- `pytest`: installs `requirements.txt`, runs `tests/test_download_tlc.py`
+  (mocks `requests`/`boto3` — no real network or S3 calls in CI).
+- `dbt-test`: installs `dbt-databricks`, writes a `profiles.yml` from
+  `DATABRICKS_HOST`/`DATABRICKS_HTTP_PATH`/`DATABRICKS_TOKEN` GitHub Actions
+  secrets (a CI-only target, `ci`, pointed at the same Premium
+  `nyc_taxi.nyc_taxi_lakehouse` schema real data lives in), then runs
+  `dbt test`.
+
+Checkpoint: `pytest` job verified passing locally (3/3 tests). The
+`dbt-test` job's YAML is written and structurally correct, but **not yet
+verified running on GitHub** — it needs the three secrets added under repo
+Settings → Secrets and variables → Actions before a push will actually
+exercise it.
 
 ## Phase 8 — README / architecture writeup
 

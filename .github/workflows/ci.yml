@@ -1,0 +1,60 @@
+name: CI
+
+on:
+  push:
+  pull_request:
+
+jobs:
+  pytest:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: Install dependencies
+        run: pip install -r requirements.txt
+
+      - name: Run pytest
+        run: pytest tests/ -v
+
+  dbt-test:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: Install dbt
+        run: pip install dbt-databricks
+
+      - name: Configure dbt profile
+        env:
+          DATABRICKS_HOST: ${{ secrets.DATABRICKS_HOST }}
+          DATABRICKS_HTTP_PATH: ${{ secrets.DATABRICKS_HTTP_PATH }}
+          DATABRICKS_TOKEN: ${{ secrets.DATABRICKS_TOKEN }}
+        run: |
+          mkdir -p ~/.dbt
+          cat > ~/.dbt/profiles.yml <<EOF
+          nyc_taxi_lakehouse:
+            target: ci
+            outputs:
+              ci:
+                type: databricks
+                catalog: nyc_taxi
+                schema: nyc_taxi_lakehouse
+                host: "$DATABRICKS_HOST"
+                http_path: "$DATABRICKS_HTTP_PATH"
+                token: "$DATABRICKS_TOKEN"
+                threads: 4
+          EOF
+
+      - name: dbt deps
+        run: dbt deps --project-dir dbt_project
+
+      - name: dbt test
+        run: dbt test --project-dir dbt_project --target ci
