@@ -15,10 +15,6 @@ dashboard built on the Gold tables (Phase 6); GitHub Actions CI verified
 green for `pytest` + `dbt test` (Phase 7).
 See [ROADMAP.md](ROADMAP.md) for the full phase-by-phase plan.
 
-## Dashboard
-
-![Power BI dashboard](Power%20BI%20dashboards/Dashboards.png)
-
 ## Structure
 
 - `ingestion/` — scripts to download TLC data and upload to S3
@@ -31,6 +27,10 @@ See [ROADMAP.md](ROADMAP.md) for the full phase-by-phase plan.
 - `Power BI dashboards/` — the Power BI report (DirectQuery against the
   Gold tables), saved in PBIP text-based format for source control
 - `docker-compose.yaml` — local Airflow (webserver, scheduler, Postgres, Redis)
+
+## Power BI Dashboard
+
+![Power BI dashboard](Power%20BI%20dashboards/Dashboards.png)
 
 ## Setup
 
