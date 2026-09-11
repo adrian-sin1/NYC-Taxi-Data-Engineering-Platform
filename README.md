@@ -9,8 +9,9 @@ and dbt.
 Bronze → Silver → Gold pipeline built and validated (Phase 1); dbt star
 schema built and tested (Phase 2); incremental loads validated end to end
 (Phase 3); scaled to Jan-May 2026 — 5 months, 18,999,282 raw trips, 18M+
-valid rows in `fact_trips`, all consistent and all 10 dbt tests passing
-(Phase 4). Next: Airflow orchestration, dashboard, CI/CD.
+valid rows in `fact_trips` (Phase 4); Airflow orchestration running
+locally via Docker, full DAG chain validated end to end (Phase 5). Next:
+dashboard, CI/CD.
 See [ROADMAP.md](ROADMAP.md) for the full phase-by-phase plan.
 
 ## Structure
@@ -19,9 +20,10 @@ See [ROADMAP.md](ROADMAP.md) for the full phase-by-phase plan.
 - `spark_jobs/bronze/` — PySpark Bronze ingestion jobs
 - `spark_jobs/silver/` — PySpark Silver cleaning/validation jobs
 - `dbt_project/` — dbt models (staging, marts) and tests for Silver → Gold
-- `dags/` — Airflow DAGs (added once the manual pipeline works)
+- `dags/` — Airflow DAGs
 - `tests/` — pytest tests for ingestion/Spark helper code
 - `.github/workflows/` — CI (pytest + dbt test on push)
+- `docker-compose.yaml` — local Airflow (webserver, scheduler, Postgres, Redis)
 
 ## Setup
 
@@ -30,3 +32,12 @@ python -m venv .venv
 source .venv/bin/activate  # or .venv\Scripts\activate on Windows
 pip install -r requirements.txt
 ```
+
+### Airflow (local, via Docker)
+
+```bash
+cp .env.example .env   # then fill in the same values you'd use elsewhere
+docker compose up airflow-init
+docker compose up -d
+```
+Open [http://localhost:8080](http://localhost:8080), log in with `airflow`/`airflow`.

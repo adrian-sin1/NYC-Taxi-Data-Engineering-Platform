@@ -3,7 +3,10 @@
         materialized='incremental',
         unique_key='trip_id',
         incremental_strategy='merge',
-        on_schema_change='append_new_columns'
+        on_schema_change='append_new_columns',
+        pre_hook="{% if is_incremental() and var('year', none) and var('month', none) %}
+            delete from {{ this }} where year = {{ var('year') }} and month = {{ var('month') }}
+        {% endif %}"
     )
 }}
 
@@ -56,5 +59,7 @@ select
     total_amount,
     congestion_surcharge,
     airport_fee,
-    cbd_congestion_fee
+    cbd_congestion_fee,
+    year,
+    month
 from trips

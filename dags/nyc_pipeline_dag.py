@@ -38,10 +38,8 @@ from airflow.providers.databricks.operators.databricks import (
 
 sys.path.insert(0, "/opt/airflow/project")
 
-# TODO: update these to the actual paths of the notebooks you save in your
-# Databricks workspace (see this file's docstring).
-BRONZE_NOTEBOOK_PATH = "/Workspace/Shared/nyc_lakehouse/bronze_ingest_taxi"
-SILVER_NOTEBOOK_PATH = "/Workspace/Shared/nyc_lakehouse/silver_clean_taxi"
+BRONZE_NOTEBOOK_PATH = "/Workspace/bronze_ingest_taxi"
+SILVER_NOTEBOOK_PATH = "/Workspace/silver_clean_taxi"
 
 DBT_PROJECT_DIR = "/opt/airflow/project/dbt_project"
 

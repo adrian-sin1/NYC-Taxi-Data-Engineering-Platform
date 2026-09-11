@@ -104,15 +104,43 @@ Silver: 18,086,069 valid + 913,213 quarantined = 18,999,282 (matches
 Bronze exactly, confirmed via per-month math). `fact_trips`: 18,086,069,
 matching Silver's valid total exactly, all 10 dbt tests pass.
 
-## Phase 5 — Airflow orchestration
+## Phase 5 — Airflow orchestration ✅
 
-`dags/nyc_pipeline_dag.py`: `download_data → upload_to_s3 →
-bronze_ingestion → silver_processing → dbt_run → dbt_test →
-quality_checks`. Retries and failure alerting on Databricks job tasks.
-Scheduled monthly.
+Airflow running locally via Docker Compose. `dags/nyc_pipeline_dag.py`:
+`resolve_month → download_and_upload_to_s3 → bronze_ingestion →
+silver_processing → quality_checks → dbt_run → dbt_test` (reordered from
+the plan's original sequence so the cheap Bronze/Silver reconciliation
+check fails fast, before wasting time on dbt transforms of already-broken
+upstream data). `resolve_month` computes year/month from the run date
+(today minus an empirically-set 4-month TLC publish lag) if not given
+explicitly, sharing the result via XCom. `retries: 2` /
+`retry_delay: 5min` configured in `default_args`.
 
-Checkpoint: trigger the DAG manually, watch it run the full chain; kill a
-task mid-run to confirm retry behavior.
+Two real bugs surfaced and got fixed while wiring this up:
+
+- Databricks Jobs API rejects the flat `notebook_task=` shortcut for
+  serverless compute -- it always demands an explicit cluster. Fixed by
+  submitting via the `tasks` array (multi-task) format instead, which
+  serverless only supports that way.
+- `fact_trips`'s incremental filter assumed months always load in
+  chronological order (`pickup_date >= max already loaded`). Backfilling
+  an older month than what's loaded would pass through Bronze/Silver
+  fine but silently never reach `fact_trips` -- and the quality_checks
+  macro wouldn't catch it either, since it only reconciles Bronze
+  against Silver, not Silver against the dbt layer. Fixed by having the
+  DAG pass the exact year/month it's processing to `dbt run`/`dbt test`
+  via `--vars`, so `fact_trips` always reprocesses that specific month
+  regardless of where it falls chronologically.
+
+Checkpoint: **passed** for the full-chain run (all 7 tasks green,
+triggered manually from the Airflow UI). The retry-on-failure half of
+the checkpoint was reasoned through rather than force-demonstrated:
+manually marking a task "Failed" in the UI is a terminal override that
+bypasses Airflow's retry evaluation by design (it doesn't simulate a
+real execution failure), and forcing a genuine failure would need a
+deliberately broken config swapped in and back out. `retries`/
+`retry_delay` are confirmed correctly wired in `default_args` via
+Airflow's standard mechanism; not independently re-verified beyond that.
 
 ## Phase 6 — Dashboard
 

@@ -11,7 +11,10 @@ PULocationID/DOLocationID actually exist in the taxi zone lookup table
 (not just "looks like a number in range" — location IDs 264/265 are
 placeholder "Unknown"/"Outside of NYC" rows that exist in the lookup but
 aren't real zones; this check only confirms the ID is a real lookup row,
-it doesn't exclude those two). Rows failing any rule go to the quarantine
+it doesn't exclude those two), and pickup_datetime's year/month must match
+this run's source month (TLC's monthly files leak a handful of boundary
+trips into adjacent months; those get quarantined here instead of showing
+up as stray rows elsewhere). Rows failing any rule go to the quarantine
 table, not silently dropped.
 
 Run this as a notebook/job on Databricks serverless compute. Reads
@@ -127,6 +130,14 @@ def process_month(year: int, month: int) -> None:
     )
     has_valid_pickup_location = F.col("PULocationID").isin(valid_location_ids)
     has_valid_dropoff_location = F.col("DOLocationID").isin(valid_location_ids)
+    # TLC's monthly files aren't strictly bounded by calendar pickup date --
+    # a handful of trips near a month's edge can appear in an adjacent
+    # month's file. Quarantine those instead of letting them silently show
+    # up as stray rows in whatever month their pickup_datetime happens to
+    # fall in.
+    has_matching_source_month = (F.year("tpep_pickup_datetime") == year) & (
+        F.month("tpep_pickup_datetime") == month
+    )
 
     is_valid = (
         has_positive_distance
@@ -135,6 +146,7 @@ def process_month(year: int, month: int) -> None:
         & has_plausible_pickup_year
         & has_valid_pickup_location
         & has_valid_dropoff_location
+        & has_matching_source_month
     )
 
     failure_reasons = F.array_compact(
@@ -150,6 +162,9 @@ def process_month(year: int, month: int) -> None:
             ),
             F.when(
                 ~has_valid_dropoff_location, F.lit("invalid_dropoff_location_id")
+            ),
+            F.when(
+                ~has_matching_source_month, F.lit("pickup_month_mismatch")
             ),
         )
     )
