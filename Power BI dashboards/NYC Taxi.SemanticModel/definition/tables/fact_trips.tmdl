@@ -119,6 +119,8 @@ table fact_trips
 
 		annotation PBI_FormatHint = {"isGeneralNumber":true}
 
+		annotation __PBI_SemanticLinks = [{"LinkTarget":{"TableName":"fact_trips","TableItemName":"trip_duration_minutes (bins)","ObjectType":4},"LinkType":"UsedInGroup"}]
+
 	column rate_code_id
 		dataType: int64
 		formatString: 0
@@ -284,6 +286,48 @@ table fact_trips
 		lineageTag: b38d2498-d5c1-45ce-b842-7cc325d4a23e
 		summarizeBy: sum
 		sourceColumn: cbd_congestion_fee
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	column 'trip_duration_minutes (bins)' =
+			IF(
+				ISBLANK('fact_trips'[trip_duration_minutes]),
+				BLANK(),
+				IF(
+					'fact_trips'[trip_duration_minutes] >= 0,
+					ROUNDDOWN('fact_trips'[trip_duration_minutes] / 5, 0) * 5,
+					ROUNDUP('fact_trips'[trip_duration_minutes] / 5, 0) * 5
+				)
+			)
+		lineageTag: dc760230-bdad-4b14-a72b-78022e88cf4c
+		summarizeBy: none
+
+		extendedProperty GroupingMetadata =
+				{
+				  "version": 0,
+				  "groupedColumns": [
+				    {
+				      "Column": {
+				        "Expression": {
+				          "SourceRef": {
+				            "Entity": "fact_trips"
+				          }
+				        },
+				        "Property": "trip_duration_minutes"
+				      }
+				    }
+				  ],
+				  "binningMetadata": {
+				    "binSize": {
+				      "value": 5.0,
+				      "unit": 0
+				    }
+				  }
+				}
+
+		annotation GroupingDesignState = {"Version":0,"Sources":[{"Name":"f","Entity":"fact_trips"}],"GroupedColumns":[{"Column":{"Expression":{"SourceRef":{"Source":"f"}},"Property":"trip_duration_minutes"}}],"BinItem":{"Expression":{"Floor":{"Expression":{"Column":{"Expression":{"SourceRef":{"Source":"f"}},"Property":"trip_duration_minutes"}},"Size":5.0}}}}
 
 		annotation SummarizationSetBy = Automatic
 

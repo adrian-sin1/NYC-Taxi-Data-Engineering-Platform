@@ -2,11 +2,11 @@
   "$schema": "https://developer.microsoft.com/json-schemas/fabric/item/report/definition/visualContainer/2.12.0/schema.json",
   "name": "0f1f6b253097751d6829",
   "position": {
-    "x": 1275.5628058727571,
-    "y": 241.37030995106039,
+    "x": 1215.6613756613758,
+    "y": 171.005291005291,
     "z": 2,
-    "height": 625.44861337683528,
-    "width": 644.82871125611757,
+    "height": 651.8760195758565,
+    "width": 704.730831973899,
     "tabOrder": 2
   },
   "visual": {
@@ -55,6 +55,67 @@
     },
     "objects": {
       "labels": [
+        {
+          "properties": {
+            "show": {
+              "expr": {
+                "Literal": {
+                  "Value": "false"
+                }
+              }
+            }
+          }
+        }
+      ],
+      "valueAxis": [
+        {
+          "properties": {
+            "fontSize": {
+              "expr": {
+                "Literal": {
+                  "Value": "12D"
+                }
+              }
+            }
+          }
+        }
+      ],
+      "categoryAxis": [
+        {
+          "properties": {
+            "fontSize": {
+              "expr": {
+                "Literal": {
+                  "Value": "12D"
+                }
+              }
+            }
+          }
+        }
+      ]
+    },
+    "visualContainerObjects": {
+      "title": [
+        {
+          "properties": {
+            "text": {
+              "expr": {
+                "Literal": {
+                  "Value": "'Total Amount Per Month'"
+                }
+              }
+            },
+            "fontSize": {
+              "expr": {
+                "Literal": {
+                  "Value": "19D"
+                }
+              }
+            }
+          }
+        }
+      ],
+      "subTitle": [
         {
           "properties": {
             "show": {
@@ -147,7 +208,7 @@
                       },
                       "Right": {
                         "Literal": {
-                          "Value": "202606L"
+                          "Value": "202605L"
                         }
                       }
                     }
