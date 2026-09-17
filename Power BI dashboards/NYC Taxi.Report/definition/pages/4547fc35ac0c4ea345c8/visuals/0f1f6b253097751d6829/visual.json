@@ -4,10 +4,10 @@
   "position": {
     "x": 1215.6613756613758,
     "y": 171.005291005291,
-    "z": 2,
+    "z": 2000,
     "height": 651.8760195758565,
     "width": 704.730831973899,
-    "tabOrder": 2
+    "tabOrder": 2000
   },
   "visual": {
     "visualType": "lineChart",
@@ -47,7 +47,8 @@
                 }
               },
               "queryRef": "fact_trips.Measure",
-              "nativeQueryRef": "Total Amount No Blank"
+              "nativeQueryRef": "Total Amount No Blank",
+              "format": "\\$#,0.###############;(\\$#,0.###############);\\$#,0.###############"
             }
           ]
         }
@@ -76,6 +77,27 @@
                   "Value": "12D"
                 }
               }
+            },
+            "showAxisTitle": {
+              "expr": {
+                "Literal": {
+                  "Value": "true"
+                }
+              }
+            },
+            "titleText": {
+              "expr": {
+                "Literal": {
+                  "Value": "'Total Amount'"
+                }
+              }
+            },
+            "titleFontSize": {
+              "expr": {
+                "Literal": {
+                  "Value": "13D"
+                }
+              }
             }
           }
         }
@@ -87,6 +109,27 @@
               "expr": {
                 "Literal": {
                   "Value": "12D"
+                }
+              }
+            },
+            "showAxisTitle": {
+              "expr": {
+                "Literal": {
+                  "Value": "true"
+                }
+              }
+            },
+            "titleText": {
+              "expr": {
+                "Literal": {
+                  "Value": "'Month'"
+                }
+              }
+            },
+            "titleFontSize": {
+              "expr": {
+                "Literal": {
+                  "Value": "13D"
                 }
               }
             }
@@ -133,20 +176,6 @@
   },
   "filterConfig": {
     "filters": [
-      {
-        "name": "391c72992c4900920048",
-        "field": {
-          "Column": {
-            "Expression": {
-              "SourceRef": {
-                "Entity": "dim_date"
-              }
-            },
-            "Property": "year_month_label"
-          }
-        },
-        "type": "Categorical"
-      },
       {
         "name": "1077dc233155b2b0d502",
         "field": {
@@ -221,7 +250,21 @@
         "howCreated": "User"
       },
       {
-        "name": "56bba3cfa6e4e9a0ac13",
+        "name": "66478f377b4841526981",
+        "field": {
+          "Column": {
+            "Expression": {
+              "SourceRef": {
+                "Entity": "dim_date"
+              }
+            },
+            "Property": "year_month_label"
+          }
+        },
+        "type": "Categorical"
+      },
+      {
+        "name": "c580f0bde5b58e55d668",
         "field": {
           "Measure": {
             "Expression": {

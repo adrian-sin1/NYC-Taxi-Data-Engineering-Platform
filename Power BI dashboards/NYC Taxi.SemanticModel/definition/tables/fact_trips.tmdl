@@ -6,6 +6,11 @@ table fact_trips
 
 		annotation PBI_FormatHint = {"isGeneralNumber":true}
 
+	measure 'Avg Fare per Trip' = DIVIDE(SUM(fact_trips[fare_amount]), COUNT(fact_trips[trip_id]))
+		lineageTag: 354e38b6-b1f7-44ab-bf6e-71024fccec4d
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
 	column year
 		dataType: int64
 		formatString: 0

@@ -76,8 +76,19 @@ def _download_and_upload(**context):
     download_and_upload(year, month)
 
 
+def _compute_processing_time(**context):
+    from datetime import datetime, timezone
+
+    start = context["dag_run"].start_date
+    elapsed_seconds = (datetime.now(timezone.utc) - start).total_seconds()
+    context["ti"].xcom_push(key="processing_time_seconds", value=round(elapsed_seconds, 2))
+
+
 YEAR_XCOM = "{{ ti.xcom_pull(task_ids='resolve_month', key='year') }}"
 MONTH_XCOM = "{{ ti.xcom_pull(task_ids='resolve_month', key='month') }}"
+PROCESSING_TIME_XCOM = (
+    "{{ ti.xcom_pull(task_ids='compute_processing_time', key='processing_time_seconds') }}"
+)
 
 
 with DAG(
@@ -159,6 +170,29 @@ with DAG(
         ),
     )
 
+    compute_processing_time = PythonOperator(
+        task_id="compute_processing_time",
+        python_callable=_compute_processing_time,
+    )
+
+    # Pipeline observability: one row per run in pipeline_runs, logging row
+    # counts through each layer plus wall-clock duration and status. Runs
+    # last, after dbt_test, so it only fires once everything else succeeded
+    # -- a failed run simply never logs a row (no attempt to log partial/
+    # failed runs yet).
+    log_pipeline_run = BashOperator(
+        task_id="log_pipeline_run",
+        bash_command=(
+            "cd " + DBT_PROJECT_DIR + " && dbt run-operation log_pipeline_run --args '{"
+            '"run_id": "{{ run_id }}", '
+            '"year": ' + YEAR_XCOM + ", "
+            '"month": ' + MONTH_XCOM + ", "
+            '"processing_time_seconds": ' + PROCESSING_TIME_XCOM + ", "
+            '"pipeline_status": "SUCCESS"'
+            "}'"
+        ),
+    )
+
     (
         resolve_month
         >> download_data
@@ -167,4 +201,6 @@ with DAG(
         >> quality_checks
         >> dbt_run
         >> dbt_test
+        >> compute_processing_time
+        >> log_pipeline_run
     )

@@ -1,0 +1,70 @@
+table trip_clusters
+	lineageTag: 97189ca5-b30f-4e3d-944f-97f512454dc3
+
+	column trip_id
+		dataType: string
+		sourceProviderType: nvarchar(max)
+		lineageTag: 530684ee-9cd0-4227-8942-3f7d55aa9158
+		summarizeBy: none
+		sourceColumn: trip_id
+
+		annotation SummarizationSetBy = Automatic
+
+	column trip_distance
+		dataType: double
+		sourceProviderType: double
+		lineageTag: d7d1580c-a284-46aa-a626-df0458bb6563
+		summarizeBy: sum
+		sourceColumn: trip_distance
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	column fare_amount
+		dataType: double
+		sourceProviderType: double
+		lineageTag: 0dead2ce-d299-4882-8f3e-d8ee063c5706
+		summarizeBy: sum
+		sourceColumn: fare_amount
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	column trip_duration_minutes
+		dataType: double
+		sourceProviderType: double
+		lineageTag: 3480a685-665d-4acd-b97d-b0c9cbbeda72
+		summarizeBy: sum
+		sourceColumn: trip_duration_minutes
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	column cluster
+		dataType: int64
+		formatString: 0
+		sourceProviderType: int
+		lineageTag: ef7c0408-50fd-4cf5-84ca-6e87bc645bb8
+		summarizeBy: sum
+		sourceColumn: cluster
+
+		annotation SummarizationSetBy = Automatic
+
+	partition trip_clusters = m
+		mode: directQuery
+		source =
+				let
+				    Source = DatabricksMultiCloud.Catalogs("dbc-cd17e9f6-2116.cloud.databricks.com", "/sql/1.0/warehouses/f7df9537f5e0bfd4", [Catalog=null, Database=null, QueryTags=null, EnableAutomaticProxyDiscovery=null, Implementation="2.0", Protocol=null]),
+				    workspace_Database = Source{[Name="nyc_taxi",Kind="Database"]}[Data],
+				    nyc_taxi_lakehouse_Schema = workspace_Database{[Name="nyc_taxi_lakehouse",Kind="Schema"]}[Data],
+				    trip_clusters_Table = nyc_taxi_lakehouse_Schema{[Name="trip_clusters",Kind="Table"]}[Data]
+				in
+				    trip_clusters_Table
+
+	annotation PBI_NavigationStepName = Navigation
+
+	annotation PBI_ResultType = Table
+

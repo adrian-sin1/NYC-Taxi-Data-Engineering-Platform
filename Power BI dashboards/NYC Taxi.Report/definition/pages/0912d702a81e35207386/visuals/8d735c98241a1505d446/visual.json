@@ -1,33 +1,33 @@
 {
   "$schema": "https://developer.microsoft.com/json-schemas/fabric/item/report/definition/visualContainer/2.12.0/schema.json",
-  "name": "043e477d91501063c4d0",
+  "name": "8d735c98241a1505d446",
   "position": {
-    "x": 575.6613756613757,
-    "y": 171.005291005291,
+    "x": 150.82294264339151,
+    "y": 183.142144638404,
     "z": 1000,
-    "height": 651.8760195758565,
-    "width": 620.16313213703108,
+    "height": 708.32917705735667,
+    "width": 821.44638403990029,
     "tabOrder": 1000
   },
   "visual": {
-    "visualType": "clusteredBarChart",
+    "visualType": "scatterChart",
     "query": {
       "queryState": {
-        "Category": {
+        "X": {
           "projections": [
             {
               "field": {
                 "Column": {
                   "Expression": {
                     "SourceRef": {
-                      "Entity": "dim_location"
+                      "Entity": "trip_clusters"
                     }
                   },
-                  "Property": "borough"
+                  "Property": "trip_distance"
                 }
               },
-              "queryRef": "dim_location.borough",
-              "nativeQueryRef": "Count of borough",
+              "queryRef": "Sum(trip_clusters.trip_distance)",
+              "nativeQueryRef": "trip_distance",
               "active": true
             }
           ]
@@ -36,66 +36,57 @@
           "projections": [
             {
               "field": {
-                "Aggregation": {
+                "Column": {
                   "Expression": {
-                    "Column": {
-                      "Expression": {
-                        "SourceRef": {
-                          "Entity": "fact_trips"
-                        }
-                      },
-                      "Property": "trip_id"
+                    "SourceRef": {
+                      "Entity": "trip_clusters"
                     }
                   },
-                  "Function": 5
+                  "Property": "fare_amount"
                 }
               },
-              "queryRef": "CountNonNull(fact_trips.trip_id)",
-              "nativeQueryRef": "Count of trip_id"
+              "queryRef": "Sum(trip_clusters.fare_amount)",
+              "nativeQueryRef": "fare_amount"
             }
           ]
         }
-      },
-      "sortDefinition": {
-        "sort": [
-          {
-            "field": {
-              "Column": {
-                "Expression": {
-                  "SourceRef": {
-                    "Entity": "dim_location"
-                  }
-                },
-                "Property": "borough"
-              }
-            },
-            "direction": "Ascending"
-          }
-        ]
       }
     },
     "objects": {
-      "categoryAxis": [
+      "trend": [
         {
           "properties": {
-            "fontSize": {
-              "expr": {
-                "Literal": {
-                  "Value": "12D"
-                }
-              }
-            },
-            "showAxisTitle": {
+            "show": {
               "expr": {
                 "Literal": {
                   "Value": "true"
                 }
               }
             },
+            "displayName": {
+              "expr": {
+                "Literal": {
+                  "Value": "'Trend line 1'"
+                }
+              }
+            }
+          }
+        }
+      ],
+      "valueAxis": [
+        {
+          "properties": {
+            "fontSize": {
+              "expr": {
+                "Literal": {
+                  "Value": "13D"
+                }
+              }
+            },
             "titleText": {
               "expr": {
                 "Literal": {
-                  "Value": "'Borough'"
+                  "Value": "'Fare Cost'"
                 }
               }
             },
@@ -109,20 +100,20 @@
           }
         }
       ],
-      "valueAxis": [
+      "categoryAxis": [
         {
           "properties": {
-            "showAxisTitle": {
+            "fontSize": {
               "expr": {
                 "Literal": {
-                  "Value": "true"
+                  "Value": "13D"
                 }
               }
             },
             "titleText": {
               "expr": {
                 "Literal": {
-                  "Value": "'Number of Trips'"
+                  "Value": "'Distance'"
                 }
               }
             },
@@ -144,14 +135,7 @@
             "text": {
               "expr": {
                 "Literal": {
-                  "Value": "'Trips by Borough'"
-                }
-              }
-            },
-            "fontSize": {
-              "expr": {
-                "Literal": {
-                  "Value": "19D"
+                  "Value": "'Fare vs Distance Regression'"
                 }
               }
             }
@@ -177,34 +161,29 @@
   "filterConfig": {
     "filters": [
       {
-        "name": "581975edd71e03356924",
+        "name": "faf33602538216434633",
         "field": {
           "Column": {
             "Expression": {
               "SourceRef": {
-                "Entity": "dim_location"
+                "Entity": "trip_clusters"
               }
             },
-            "Property": "borough"
+            "Property": "trip_distance"
           }
         },
-        "type": "Categorical"
+        "type": "Advanced"
       },
       {
-        "name": "e08357f728aabb821b06",
+        "name": "56944e60281d23247c6e",
         "field": {
-          "Aggregation": {
+          "Column": {
             "Expression": {
-              "Column": {
-                "Expression": {
-                  "SourceRef": {
-                    "Entity": "fact_trips"
-                  }
-                },
-                "Property": "trip_id"
+              "SourceRef": {
+                "Entity": "trip_clusters"
               }
             },
-            "Function": 5
+            "Property": "fare_amount"
           }
         },
         "type": "Advanced"

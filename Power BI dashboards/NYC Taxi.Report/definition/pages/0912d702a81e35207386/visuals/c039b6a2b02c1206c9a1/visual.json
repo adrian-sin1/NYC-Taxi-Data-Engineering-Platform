@@ -1,0 +1,191 @@
+{
+  "$schema": "https://developer.microsoft.com/json-schemas/fabric/item/report/definition/visualContainer/2.12.0/schema.json",
+  "name": "c039b6a2b02c1206c9a1",
+  "position": {
+    "x": 1012.6683291770573,
+    "y": 183.142144638404,
+    "z": 0,
+    "height": 708.32917705735667,
+    "width": 821.44638403990029,
+    "tabOrder": 0
+  },
+  "visual": {
+    "visualType": "scatterChart",
+    "query": {
+      "queryState": {
+        "Series": {
+          "projections": [
+            {
+              "field": {
+                "Column": {
+                  "Expression": {
+                    "SourceRef": {
+                      "Entity": "trip_clusters"
+                    }
+                  },
+                  "Property": "cluster"
+                }
+              },
+              "queryRef": "trip_clusters.cluster",
+              "nativeQueryRef": "cluster"
+            }
+          ]
+        },
+        "X": {
+          "projections": [
+            {
+              "field": {
+                "Column": {
+                  "Expression": {
+                    "SourceRef": {
+                      "Entity": "trip_clusters"
+                    }
+                  },
+                  "Property": "trip_distance"
+                }
+              },
+              "queryRef": "Sum(trip_clusters.trip_distance)",
+              "nativeQueryRef": "trip_distance",
+              "active": true
+            }
+          ]
+        },
+        "Y": {
+          "projections": [
+            {
+              "field": {
+                "Column": {
+                  "Expression": {
+                    "SourceRef": {
+                      "Entity": "trip_clusters"
+                    }
+                  },
+                  "Property": "fare_amount"
+                }
+              },
+              "queryRef": "Sum(trip_clusters.fare_amount)",
+              "nativeQueryRef": "fare_amount"
+            }
+          ]
+        }
+      }
+    },
+    "objects": {
+      "categoryAxis": [
+        {
+          "properties": {
+            "titleText": {
+              "expr": {
+                "Literal": {
+                  "Value": "'Distance'"
+                }
+              }
+            },
+            "titleFontSize": {
+              "expr": {
+                "Literal": {
+                  "Value": "13D"
+                }
+              }
+            }
+          }
+        }
+      ],
+      "valueAxis": [
+        {
+          "properties": {
+            "titleText": {
+              "expr": {
+                "Literal": {
+                  "Value": "'Fare Cost'"
+                }
+              }
+            },
+            "titleFontSize": {
+              "expr": {
+                "Literal": {
+                  "Value": "13D"
+                }
+              }
+            }
+          }
+        }
+      ]
+    },
+    "visualContainerObjects": {
+      "title": [
+        {
+          "properties": {
+            "text": {
+              "expr": {
+                "Literal": {
+                  "Value": "'Fare vs Distance Cluster'"
+                }
+              }
+            }
+          }
+        }
+      ],
+      "subTitle": [
+        {
+          "properties": {
+            "show": {
+              "expr": {
+                "Literal": {
+                  "Value": "false"
+                }
+              }
+            }
+          }
+        }
+      ]
+    },
+    "drillFilterOtherVisuals": true
+  },
+  "filterConfig": {
+    "filters": [
+      {
+        "name": "d6d7eb4701298c0391be",
+        "field": {
+          "Column": {
+            "Expression": {
+              "SourceRef": {
+                "Entity": "trip_clusters"
+              }
+            },
+            "Property": "cluster"
+          }
+        },
+        "type": "Advanced"
+      },
+      {
+        "name": "091a94dce74a328ac43c",
+        "field": {
+          "Column": {
+            "Expression": {
+              "SourceRef": {
+                "Entity": "trip_clusters"
+              }
+            },
+            "Property": "trip_distance"
+          }
+        },
+        "type": "Advanced"
+      },
+      {
+        "name": "f2157ee8774617aa6dec",
+        "field": {
+          "Column": {
+            "Expression": {
+              "SourceRef": {
+                "Entity": "trip_clusters"
+              }
+            },
+            "Property": "fare_amount"
+          }
+        },
+        "type": "Advanced"
+      }
+    ]
+  }
+}

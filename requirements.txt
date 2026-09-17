@@ -6,3 +6,5 @@ requests>=2.31
 dbt-databricks>=1.7
 pytest>=8.0
 python-dotenv>=1.0
+scikit-learn>=1.4
+databricks-sql-connector>=3.0

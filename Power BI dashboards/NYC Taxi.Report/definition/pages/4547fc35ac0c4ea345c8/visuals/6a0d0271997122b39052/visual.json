@@ -125,6 +125,27 @@
                   "Value": "12D"
                 }
               }
+            },
+            "showAxisTitle": {
+              "expr": {
+                "Literal": {
+                  "Value": "true"
+                }
+              }
+            },
+            "titleText": {
+              "expr": {
+                "Literal": {
+                  "Value": "'Hour in Day'"
+                }
+              }
+            },
+            "titleFontSize": {
+              "expr": {
+                "Literal": {
+                  "Value": "13D"
+                }
+              }
             }
           }
         }
@@ -136,6 +157,27 @@
               "expr": {
                 "Literal": {
                   "Value": "12D"
+                }
+              }
+            },
+            "showAxisTitle": {
+              "expr": {
+                "Literal": {
+                  "Value": "true"
+                }
+              }
+            },
+            "titleText": {
+              "expr": {
+                "Literal": {
+                  "Value": "'Number of Trips'"
+                }
+              }
+            },
+            "titleFontSize": {
+              "expr": {
+                "Literal": {
+                  "Value": "13D"
                 }
               }
             }
@@ -196,7 +238,21 @@
   "filterConfig": {
     "filters": [
       {
-        "name": "69c2257085c663592c08",
+        "name": "03d9f0f51062c3dd16b0",
+        "field": {
+          "Column": {
+            "Expression": {
+              "SourceRef": {
+                "Entity": "fact_trips"
+              }
+            },
+            "Property": "pickup_hour"
+          }
+        },
+        "type": "Advanced"
+      },
+      {
+        "name": "c7e2456324ce090de0dc",
         "field": {
           "Aggregation": {
             "Expression": {
@@ -210,20 +266,6 @@
               }
             },
             "Function": 5
-          }
-        },
-        "type": "Advanced"
-      },
-      {
-        "name": "b2f0ef8cc697a564b900",
-        "field": {
-          "Column": {
-            "Expression": {
-              "SourceRef": {
-                "Entity": "fact_trips"
-              }
-            },
-            "Property": "pickup_hour"
           }
         },
         "type": "Advanced"
