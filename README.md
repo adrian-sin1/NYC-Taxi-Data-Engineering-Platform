@@ -32,6 +32,12 @@ See [ROADMAP.md](ROADMAP.md) for the full phase-by-phase plan.
 
 ![Power BI dashboard](Power%20BI%20dashboards/Dashboards.png)
 
+Regression (fare vs. distance, with a fitted trend line) and k-means trip
+clustering (scikit-learn — see [analytics/cluster_trips.py](analytics/cluster_trips.py)),
+on a second report page:
+
+![Regression and clustering charts](Power%20BI%20dashboards/Regression%20and%20Cluster.png)
+
 ## Setup
 
 ```bash
